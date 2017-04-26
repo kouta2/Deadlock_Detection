@@ -19,7 +19,7 @@ public class AcceptRPCConnections implements Runnable
     {
         try
         {
-            main m = new main();
+            Main m = new Main();
             RPCFunctions stub = (RPCFunctions) UnicastRemoteObject.exportObject(m, 0);
             Registry registry = LocateRegistry.getRegistry(port_num);
             try

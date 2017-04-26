@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class ConnectToOtherRPCs
 {
     
-    int port_num = 2001;
+    int port_num = 2002;
     String ip_addrs [] = {"172.22.146.231", "172.22.146.233", "172.22.146.235", "172.22.146.237", "172.22.146.239", "172.22.146.241", "172.22.146.243", "172.22.146.245", "172.22.146.247", "172.22.146.249"}; // list of ip addresses used for accepting clients and connecting to clients
     public ConnectToOtherRPCs(int p_num)
     {
