@@ -36,23 +36,28 @@ public class Main implements RPCFunctions
 
     public String c_set(String cmd, String key, String value)
     {
+        // check if set is valid and return
         return null;
     }
 
-    public String c_get(String cmd, String key)
+    public String c_get(String cmd, String key, boolean local, String result)
     {
+        // check if get is valid
+        // return result
+        return null;
+    }
+
+    public String c_commit(String client, HashMap<String, String> updates)
+    {
+        // send updates to proper servers
+        // clean up graph
 
         return null;
     }
 
-    public String c_commit(HashMap<String, String> updates)
+    public String c_abort(String client)
     {
-
-        return null;
-    }
-
-    public String c_abort(String node)
-    {
+        // clean up graph
 
         return null;
     }

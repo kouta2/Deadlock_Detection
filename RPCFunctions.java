@@ -13,10 +13,10 @@ public interface RPCFunctions extends Remote
 
     String c_set(String cmd, String key, String value) throws RemoteException;
 
-    String c_get(String cmd, String key) throws RemoteException;
+    String c_get(String cmd, String key, boolean local, String result) throws RemoteException;
 
-    String c_commit(HashMap<String, String> updates) throws RemoteException;
+    String c_commit(String client, HashMap<String, String> updates) throws RemoteException;
 
-    String c_abort(String nod) throws RemoteException;
+    String c_abort(String client) throws RemoteException;
 }
 
