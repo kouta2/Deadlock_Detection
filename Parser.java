@@ -1,4 +1,4 @@
-import java.util.HashMap
+import java.util.HashMap;
 
 
 /*
@@ -42,16 +42,15 @@ public class Parser
 
 		
 	 
-		RPCFunctions r = Main.rpc_connect.get_connection(machine); 
 		String result;
 	
 		if (arg.toUpperCase().equals("GET")){
-			result = r.set(key); 		
+			result = r.s_get(key); 		
 		}
 
 		if (arg.toUpperCase().equals("SET")){
 			String value = args[2]; 
-			result = r.set(key, value);
+			result = r.s_set(key, value);
 		}
 		
 

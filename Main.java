@@ -8,7 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.net.InetAddress;
-iimport java.util.Scanner;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,19 +22,43 @@ public class Main implements RPCFunctions
 	static HashMap<String,String> kv;
 	static HashMap<String, Integer> machines;
 
-    public String set(String key, String value)
+    public String s_set(String key, String value)
     {
        	kv.put(key,value);
 		return null; 
     }
 
-    public String get(String key)
+    public String s_get(String key)
     {
         return kv.get(key); 
     }
 
-	private void init(){
-		machines = new HashMap<String,Integer>;
+
+    public String c_set(String cmd, String key, String value)
+    {
+        return null;
+    }
+
+    public String c_get(String cmd, String key)
+    {
+
+        return null;
+    }
+
+    public String c_commit(HashMap<String, String> updates)
+    {
+
+        return null;
+    }
+
+    public String c_abort(String node)
+    {
+
+        return null;
+    }
+
+	private static void init(){
+		machines = new HashMap<String,Integer>();
 		machines.put("A",1); 
 		machines.put("B",2); 
 		machines.put("C",3); 
@@ -55,8 +79,13 @@ public class Main implements RPCFunctions
 		try 
         { 
             int process_num = Integer.parseInt(InetAddress.getLocalHost().getHostName().substring(15, 17)); 
-            String[] server_id = {"A", "B", "C", "D", "E"};
-            SERVER_ID = server_id[process_num - 1];
+            if(process_num == 10)
+                SERVER_ID = "coordinator!";
+            else
+            {
+                String[] server_id = {"A", "B", "C", "D", "E"};
+                SERVER_ID = server_id[process_num - 1];
+            }
         }
         catch (Exception e) {}
 
