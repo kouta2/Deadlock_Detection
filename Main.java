@@ -61,7 +61,7 @@ public class Main implements RPCFunctions
         // clean up graph
 
         return null;
-    }
+   }
 
 	private static void init()
     {
