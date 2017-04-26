@@ -11,9 +11,9 @@ public interface RPCFunctions extends Remote
 
     String s_set(String key, String value) throws RemoteException;
 
-    String c_set(int pid, String cmd, String key, String value) throws RemoteException;
+    String c_set(int pid, String key, String value) throws RemoteException;
 
-    String c_get(int pid, String cmd, String key, boolean local, String result) throws RemoteException;
+    String c_get(int pid, String key, boolean local, String result) throws RemoteException;
 
     String c_commit(int pid, HashMap<String, String> updates) throws RemoteException;
 

@@ -35,13 +35,13 @@ public class Main implements RPCFunctions
     }
 
 
-    public String c_set(int pid, String cmd, String key, String value)
+    public String c_set(int pid, String key, String value)
     {
         // check if set is valid and return
         return null;
     }
 
-    public String c_get(int pid, String cmd, String key, boolean local, String result)
+    public String c_get(int pid, String key, boolean local, String result)
     {
         // check if get is valid
         // return result
@@ -63,7 +63,8 @@ public class Main implements RPCFunctions
         return null;
     }
 
-	private static void init(){
+	private static void init()
+    {
 		machines = new HashMap<String,Integer>();
 		machines.put("A",1); 
 		machines.put("B",2); 
@@ -71,15 +72,11 @@ public class Main implements RPCFunctions
 		machines.put("D",4); 
 		machines.put("E",5); 
 
-		
-
 	}
 
 
     public static void main(String[] args)
     {
-     	
-	
 		init();//init stuff 
 
 		try 
@@ -107,6 +104,5 @@ public class Main implements RPCFunctions
             while(true)
                 Parser.handle_one_line(scan.nextLine());
         }
-
     }
 }
