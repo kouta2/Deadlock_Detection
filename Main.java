@@ -18,6 +18,7 @@ public class Main implements RPCFunctions
 {
     static int PORT_NUM = 2002;
     static String SERVER_ID = "";
+    static int PROCESS_ID;
     static ConnectToOtherRPCs rpc_connect;
 	static HashMap<String,String> kv;
 	static HashMap<String, Integer> machines;
@@ -34,20 +35,20 @@ public class Main implements RPCFunctions
     }
 
 
-    public String c_set(String cmd, String key, String value)
+    public String c_set(int pid, String key, String value)
     {
         // check if set is valid and return
         return null;
     }
 
-    public String c_get(String cmd, String key, boolean local, String result)
+    public String c_get(int pid, String key, boolean local, String result)
     {
         // check if get is valid
         // return result
         return null;
     }
 
-    public String c_commit(String client, HashMap<String, String> updates)
+    public String c_commit(int pid, HashMap<String, String> updates)
     {
         // send updates to proper servers
         // clean up graph
@@ -55,14 +56,15 @@ public class Main implements RPCFunctions
         return null;
     }
 
-    public String c_abort(String client)
+    public String c_abort(int pid)
     {
         // clean up graph
 
         return null;
     }
 
-	private static void init(){
+	private static void init()
+    {
 		machines = new HashMap<String,Integer>();
 		machines.put("A",1); 
 		machines.put("B",2); 
@@ -70,26 +72,22 @@ public class Main implements RPCFunctions
 		machines.put("D",4); 
 		machines.put("E",5); 
 
-		
-
 	}
 
 
     public static void main(String[] args)
     {
-     	
-	
 		init();//init stuff 
 
 		try 
         { 
-            int process_num = Integer.parseInt(InetAddress.getLocalHost().getHostName().substring(15, 17)); 
-            if(process_num == 10)
+            PROCESS_ID = Integer.parseInt(InetAddress.getLocalHost().getHostName().substring(15, 17)); 
+            if(PROCESS_ID == 10)
                 SERVER_ID = "coordinator!";
             else
             {
                 String[] server_id = {"A", "B", "C", "D", "E"};
-                SERVER_ID = server_id[process_num - 1];
+                SERVER_ID = server_id[PROCESS_ID - 1];
             }
         }
         catch (Exception e) {}
@@ -106,6 +104,5 @@ public class Main implements RPCFunctions
             while(true)
                 Parser.handle_one_line(scan.nextLine());
         }
-
     }
 }
