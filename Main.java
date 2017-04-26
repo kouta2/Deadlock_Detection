@@ -41,7 +41,7 @@ public class Main implements RPCFunctions
         }
         catch (Exception e) {}
 
-        if(SERVER_ID == "") // server
+        if(!SERVER_ID.equals("")) // server
         {
             AcceptRPCConnections accept = new AcceptRPCConnections(PORT_NUM);
             accept.run();
