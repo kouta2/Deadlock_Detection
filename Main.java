@@ -41,12 +41,18 @@ public class Main implements RPCFunctions
         }
         catch (Exception e) {}
 
-        Thread accept = new Thread(new AcceptRPCConnections(PORT_NUM));
-        accept.start();
+        if(SERVER_ID == "") // server
+        {
+            AcceptRPCConnections accept = new AcceptRPCConnections(PORT_NUM);
+            accept.run();
+        }
+        else // client
+        {
+            Scanner scan = new Scanner(System.in);
+            rpc_connect = new ConnectToOtherRPCs(PORT_NUM);
+            while(true)
+                Parser.handle_one_line(scan.nextLine());
+        }
 
-        Scanner scan = new Scanner(System.in);
-        rpc_connect = new ConnectToOtherRPCs(PORT_NUM);
-        while(true)
-            Parser.handle_one_line(scan.nextLine());
     }
 }
