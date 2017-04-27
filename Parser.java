@@ -47,7 +47,7 @@ public class Parser
 		String[] args = cmd.split(" ");
 		
 		String arg = args[0];
-		String[] obj = args[1].split(".");
+		String[] obj = args[1].split("\\.");
 		int machine = Main.machines.get(obj[0]);
 		String key = args[1];
 
