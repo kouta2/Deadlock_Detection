@@ -54,11 +54,15 @@ public class Main implements RPCFunctions
 		}
 
 		int key_owner = machines.get(key.split("\\.")[0]); 
+        System.err.println("key owner is: " + key_owner);
 		RPCFunctions r = rpc_connect.get_connection(key_owner); 
 
 		try{
+            System.err.println("hi");
 			r.s_set(key, value); 
-		}catch (Exception e){}
+		}catch (Exception e){
+            System.err.println("hello");
+            System.err.println(e.getMessage());}
 
 		
         return "OK";
@@ -138,6 +142,7 @@ public class Main implements RPCFunctions
 		machines.put("D",4); 
 		machines.put("E",5); 
 
+        rpc_connect = new ConnectToOtherRPCs(PORT_NUM);
 	}
 
 
@@ -170,7 +175,6 @@ public class Main implements RPCFunctions
         else // client
         {
             Scanner scan = new Scanner(System.in);
-            rpc_connect = new ConnectToOtherRPCs(PORT_NUM);
             while(true)
                 Parser.handle_one_line(scan.nextLine());
         }
