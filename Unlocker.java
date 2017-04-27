@@ -13,43 +13,81 @@ import java.util.*;
 public class Unlocker
 {
 
-    private HashMap<String, ArrayList<String>> graph; // outgoing edges
+    public class Edge
+    {
+        private String destination;
+        private boolean is_write;
+
+        public Edge(String dest, boolean write)
+        {
+            destination = dest;
+            is_write = write;
+        }
+
+        public boolean get_is_write()
+        {
+            return is_write;
+        }
+
+        public void upgrade()
+        {
+            is_write = true;
+        }
+
+        public String get_destination()
+        {
+            return destination;
+        }
+
+        public boolean equals(Edge e)
+        {
+            return e.get_destination().equals(destination);
+        }
+
+        public String toString()
+        {
+            return destination + ", " + is_write;
+        }
+    }
+
+    private HashMap<String, ArrayList<Edge>> graph; // outgoing edges
 
     public Unlocker()
     {
-        graph = new HashMap<String, ArrayList<String>>();
-        graph.put("6", new ArrayList<String>());
-        graph.put("7", new ArrayList<String>());
-        graph.put("8", new ArrayList<String>());
-        graph.put("9", new ArrayList<String>());
+        graph = new HashMap<String, ArrayList<Edge>>();
+        graph.put("6", new ArrayList<Edge>());
+        graph.put("7", new ArrayList<Edge>());
+        graph.put("8", new ArrayList<Edge>());
+        graph.put("9", new ArrayList<Edge>());
     }
 
-    public HashMap<String, ArrayList<String>> get_graph()
+    public HashMap<String, ArrayList<Edge>> get_graph()
     {
         return graph;
     }
 
     public void add_vertex(String vert)
     {
-        graph.put(vert, new ArrayList<String>());
+        graph.put(vert, new ArrayList<Edge>());
     }
 
-    public void add_edge(String vertA, String vertB)
+    public void add_edge(String vertA, String vertB, boolean write)
     {
-        graph.get(vertA).add(vertB);
+        graph.get(vertA).add(new Edge(vertB, write));
     }
 
-    public ArrayList<String> get_neighbors(String vert)
+    public ArrayList<Edge> get_neighbors(String vert)
     {
         return graph.get(vert);
     }
 
     public boolean is_cycle(String vert)
     {
-        ArrayList<String> neighbors = get_neighbors(vert);
+        ArrayList<Edge> neighbors = get_neighbors(vert);
         HashSet<String> visited = new HashSet<String>();
-        for(String n : neighbors)
+        for(Edge e : neighbors)
         {
+            String n = e.get_destination();
             if(!visited.contains(n))
                 if(is_cycle_helper(n, visited, vert))
                     return true;
@@ -64,9 +102,10 @@ public class Unlocker
             return true;
         else
         {
-            ArrayList<String> neighbors = get_neighbors(curr);
-            for(String n : neighbors)
+            ArrayList<Edge> neighbors = get_neighbors(curr);
+            for(Edge e : neighbors)
             {
+                String n = e.get_destination();
                 if(!visited.contains(n))
                     if(is_cycle_helper(n, visited, vert))
                         return true;
@@ -81,15 +120,15 @@ public class Unlocker
     */
     public void clear_vertex(String vert)
     {
-        graph.put(vert, new ArrayList<String>());
-
+        graph.put(vert, new ArrayList<Edge>());
+        Edge e = new Edge(vert, true);
         Iterator it = graph.entrySet().iterator();
         while(it.hasNext())
         {
             Map.Entry pair = (Map.Entry)it.next();
 
-            ArrayList<String> temp = (ArrayList<String>)pair.getValue();
-            temp.remove(vert);
+            ArrayList<Edge> temp = (ArrayList<Edge>)pair.getValue();
+            temp.remove(e);
         }
     }
 
@@ -107,11 +146,11 @@ public class Unlocker
     {
         Unlocker u = new Unlocker();
         u.add_vertex("parker");
-        u.add_edge("parker", "6");
-        u.add_edge("7", "parker");
+        u.add_edge("parker", "6", true);
+        u.add_edge("7", "parker", false);
         System.out.println(u.is_cycle("6"));
         System.out.println(u.is_cycle("8"));
-        u.add_edge("6", "7");
+        u.add_edge("6", "7", false);
         System.out.println(u.get_graph().toString());
         System.out.println(u.is_cycle("6"));
         System.out.println(u.is_cycle("8"));
