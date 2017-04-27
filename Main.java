@@ -51,7 +51,7 @@ public class Main implements RPCFunctions
 			return null; 
 		}
 
-		int key_owner = machines.get(key.split(".")[0]); 
+		int key_owner = machines.get(key.split("\\.")[0]); 
 		RPCFunctions r = rpc_connect.get_connection(key_owner); 
 
 		try{
@@ -79,7 +79,7 @@ public class Main implements RPCFunctions
 			return result; 
 		}
 
-		int key_owner = machines.get(key.split(".")[0]); 	
+		int key_owner = machines.get(key.split("\\.")[0]); 	
 		RPCFunctions r = rpc_connect.get_connection(key_owner); 
 		
 		result = null;  
@@ -105,7 +105,7 @@ public class Main implements RPCFunctions
 
 			String key = entry.getKey(); 
 			String value = entry.getValue(); 
-			int key_owner = machines.get(key.split(".")[0]); 	
+			int key_owner = machines.get(key.split("\\.")[0]); 	
 
 			RPCFunctions r = rpc_connect.get_connection(key_owner); 
 			try{
@@ -141,14 +141,14 @@ public class Main implements RPCFunctions
     {
 		init(); 
 
-		try 
+	try 
         { 
             PROCESS_ID = Integer.parseInt(InetAddress.getLocalHost().getHostName().substring(15, 17)); 
             if(PROCESS_ID == 10)
             { 
-			   SERVER_ID = "coordinator!";
-				unlocker = new Unlocker(); 
-			}
+		SERVER_ID = "coordinator!";
+		unlocker = new Unlocker(); 
+	    }
             else
             {
                 String[] server_id = {"A", "B", "C", "D", "E"};
