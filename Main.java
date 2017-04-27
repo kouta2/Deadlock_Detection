@@ -30,11 +30,12 @@ public class Main implements RPCFunctions
     {
        	kv.put(key,value);
         System.err.println("key is: " + key + " and value is: " + value);
-		return null; 
+	    return null; 
     }
 
     public String s_get(String key)
     {
+        System.err.println("in s_get with key: " + key);
         return kv.get(key); 
     }
 
@@ -43,6 +44,7 @@ public class Main implements RPCFunctions
     {
         // check if set is valid and return
 
+        System.err.println("in c_set with key is: " + key + " and value is: " + value);
 
 		boolean allowed = true;  	
 		//TODO: Graph edge checking
@@ -67,6 +69,7 @@ public class Main implements RPCFunctions
         // check if get is valid
         // return result
     	
+        System.err.println("in c_get with key: " + key);
 
 		boolean allowed = true;  
     	//TODO: Graph edge checking    
@@ -99,7 +102,7 @@ public class Main implements RPCFunctions
         // send updates to proper servers
         // clean up graph
 
-
+        System.err.println("In c_commit with updates : " + updates.toString());
 		
 		for (Map.Entry<String,String> entry : updates.entrySet()){
 
@@ -120,6 +123,7 @@ public class Main implements RPCFunctions
 
     public String c_abort(int pid)
     {
+        System.err.println("in c_abort from pid: " + pid);
 		unlocker.clear_vertex(Integer.toString(PROCESS_ID)); 
         return null;
    }
