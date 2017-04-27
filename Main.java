@@ -23,6 +23,8 @@ public class Main implements RPCFunctions
     static ConnectToOtherRPCs rpc_connect;
 	static HashMap<String,String> kv;
 	static HashMap<String, Integer> machines;
+	static Unlocker unlocker; 
+
 
     public String s_set(String key, String value)
     {
@@ -41,7 +43,7 @@ public class Main implements RPCFunctions
         // check if set is valid and return
 
 
-		boolean allowed; 	
+		boolean allowed = false;  	
 		//TODO: Graph edge checking
 		
 		if (!allowed){
@@ -65,7 +67,7 @@ public class Main implements RPCFunctions
         // return result
     	
 
-		boolean allowed; 
+		boolean allowed = false;  
     	//TODO: Graph edge checking    
 		
 		if (!allowed){
@@ -79,13 +81,13 @@ public class Main implements RPCFunctions
 		int key_owner = machines.get(key.split(".")[0]); 	
 		RPCFunctions r = rpc_connect.get_connection(key_owner); 
 		
-		String result = null;  
+		result = null;  
 		try{
-			result = r.s_get(key)
+			result = r.s_get(key);
 		}catch(Exception e){}
 	
 		if (result == null){
-			return "NOT FOUND"
+			return "NOT FOUND";
 		}
 		
 		return result; 
@@ -111,19 +113,19 @@ public class Main implements RPCFunctions
 
 		}
 
-
+		unlocker.clear_vertex(Integer.toString(PROCESS_ID)); 
         return null;
     }
 
     public String c_abort(int pid)
     {
-        // clean up graph
-
+		unlocker.clear_vertex(Integer.toString(PROCESS_ID)); 
         return null;
    }
 
 	private static void init()
     {
+		//init machines data structure for convenience
 		machines = new HashMap<String,Integer>();
 		machines.put("A",1); 
 		machines.put("B",2); 
@@ -136,13 +138,16 @@ public class Main implements RPCFunctions
 
     public static void main(String[] args)
     {
-		init();//init stuff 
+		init(); 
 
 		try 
         { 
             PROCESS_ID = Integer.parseInt(InetAddress.getLocalHost().getHostName().substring(15, 17)); 
             if(PROCESS_ID == 10)
-                SERVER_ID = "coordinator!";
+            { 
+			   SERVER_ID = "coordinator!";
+				unlocker = new Unlocker(); 
+			}
             else
             {
                 String[] server_id = {"A", "B", "C", "D", "E"};
@@ -153,6 +158,7 @@ public class Main implements RPCFunctions
 
         if(!SERVER_ID.equals("")) // server
         {
+			kv = new HashMap<String, String>(); //init the key value store
             AcceptRPCConnections accept = new AcceptRPCConnections(PORT_NUM);
             accept.run();
         }
