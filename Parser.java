@@ -24,6 +24,7 @@ public class Parser
 		if (cmd.toUpperCase().equals("BEGIN")){
 			re_init(); 
 			System.out.println("OK");
+			return; 
 		}
 
 		if (cmd.toUpperCase().equals("ABORT")){
@@ -32,6 +33,7 @@ public class Parser
 			}catch (Exception e){}; 
 			re_init(); 
 			System.out.println("ABORT");
+			return; 
 		}
 
 		if (cmd.toUpperCase().equals("COMMIT")){
@@ -42,6 +44,7 @@ public class Parser
 
 			re_init();  
 			System.out.println("COMMIT OK");
+			return; 
 		}
 		
 		String[] args = cmd.split(" ");
