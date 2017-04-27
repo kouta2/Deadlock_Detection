@@ -84,6 +84,7 @@ public class Parser
 
 		if (arg.toUpperCase().equals("SET")){
 			String value = args[2]; 
+			System.err.println ("Set value to: " + value); 
 			try{	
 				System.err.println("Calling c_set"); 
 				result = r.c_set(Main.PROCESS_ID, key, value);
