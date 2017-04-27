@@ -58,7 +58,8 @@ public class Parser
 			result = local.get(key); 
 			boolean local_flag = (result != null); 
 			
-			try{
+			try{	
+				
 				result = r.c_get(Main.PROCESS_ID,key,local_flag,result); 
 			}catch (Exception e){} 
 			
@@ -83,8 +84,10 @@ public class Parser
 
 		if (arg.toUpperCase().equals("SET")){
 			String value = args[2]; 
-			try{
+			try{	
+				System.err.println("Calling c_set"); 
 				result = r.c_set(Main.PROCESS_ID, key, value);
+				System.err.println("Returned from c_set"); 
 			}catch (Exception e){}
 			if (result == null){
 				try{
