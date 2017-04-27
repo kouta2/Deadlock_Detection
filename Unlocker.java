@@ -21,6 +21,7 @@ public class Unlocker
         graph.put("6", new ArrayList<String>());
         graph.put("7", new ArrayList<String>());
         graph.put("8", new ArrayList<String>());
+        graph.put("9", new ArrayList<String>());
     }
 
     public HashMap<String, ArrayList<String>> get_graph()

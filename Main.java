@@ -29,6 +29,7 @@ public class Main implements RPCFunctions
     public String s_set(String key, String value)
     {
        	kv.put(key,value);
+        System.err.println("key is: " + key + " and value is: " + value);
 		return null; 
     }
 
