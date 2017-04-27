@@ -43,7 +43,7 @@ public class Main implements RPCFunctions
         // check if set is valid and return
 
 
-		boolean allowed = false;  	
+		boolean allowed = true;  	
 		//TODO: Graph edge checking
 		
 		if (!allowed){
@@ -67,7 +67,7 @@ public class Main implements RPCFunctions
         // return result
     	
 
-		boolean allowed = false;  
+		boolean allowed = true;  
     	//TODO: Graph edge checking    
 		
 		if (!allowed){
