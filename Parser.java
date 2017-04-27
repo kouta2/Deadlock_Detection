@@ -22,15 +22,11 @@ public class Parser
 		RPCFunctions r = Main.rpc_connect.get_connection(10);
 		
 		if (cmd.toUpperCase().equals("BEGIN")){
-			try{	
-				r.c_abort(Main.PROCESS_ID); //This machine is resetting its transaction
-			}catch (Exception e){}
 			re_init(); 
 			System.out.println("OK");
 		}
 
 		if (cmd.toUpperCase().equals("ABORT")){
-			//clear out local key value store
 			try{
 				r.c_abort(Main.PROCESS_ID); 
 			}catch (Exception e){}; 
@@ -39,8 +35,6 @@ public class Parser
 		}
 
 		if (cmd.toUpperCase().equals("COMMIT")){
-			//TODO: implement actual committing
-			//clear key value store
 
 			try{
 				r.c_commit(Main.PROCESS_ID, local);

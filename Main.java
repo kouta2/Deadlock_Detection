@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.HashMap;
+import java.util.Map; 
 
 public class Main implements RPCFunctions
 {
@@ -38,20 +39,78 @@ public class Main implements RPCFunctions
     public String c_set(int pid, String key, String value)
     {
         // check if set is valid and return
-        return null;
+
+
+		boolean allowed; 	
+		//TODO: Graph edge checking
+		
+		if (!allowed){
+			return null; 
+		}
+
+		int key_owner = machines.get(key.split(".")[0]); 
+		RPCFunctions r = rpc_connect.get_connection(key_owner); 
+
+		try{
+			r.s_set(key, value); 
+		}catch (Exception e){}
+
+		
+        return "OK";
     }
 
     public String c_get(int pid, String key, boolean local, String result)
     {
         // check if get is valid
         // return result
-        return null;
+    	
+
+		boolean allowed; 
+    	//TODO: Graph edge checking    
+		
+		if (!allowed){
+			return null; 	
+		}
+
+		if (local){
+			return result; 
+		}
+
+		int key_owner = machines.get(key.split(".")[0]); 	
+		RPCFunctions r = rpc_connect.get_connection(key_owner); 
+		
+		String result = null;  
+		try{
+			result = r.s_get(key)
+		}catch(Exception e){}
+	
+		if (result == null){
+			return "NOT FOUND"
+		}
+		
+		return result; 
     }
 
     public String c_commit(int pid, HashMap<String, String> updates)
     {
         // send updates to proper servers
         // clean up graph
+
+
+		
+		for (Map.Entry<String,String> entry : updates.entrySet()){
+
+			String key = entry.getKey(); 
+			String value = entry.getValue(); 
+			int key_owner = machines.get(key.split(".")[0]); 	
+
+			RPCFunctions r = rpc_connect.get_connection(key_owner); 
+			try{
+				r.s_set(key, value); 
+			}catch(Exception e){}
+
+		}
+
 
         return null;
     }
