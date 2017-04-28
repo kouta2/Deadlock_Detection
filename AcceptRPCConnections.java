@@ -15,7 +15,7 @@ public class AcceptRPCConnections
         port_num = p_num;
     }    
 
-    public void run()
+    public void run(String id)
     {
         try
         {
@@ -30,7 +30,10 @@ public class AcceptRPCConnections
             {
                 registry.rebind("RPCFunctions", stub);
             }
-            System.err.println("Server ready");
+            if(id.equals("coordinator!"))
+                System.err.println("Coordinator ready");
+            else
+                System.err.println("Server " + id + " ready");
         }
         catch (Exception e)
         {
