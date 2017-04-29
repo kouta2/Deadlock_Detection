@@ -42,8 +42,10 @@ public class Unlocker
             return destination;
         }
 
-        public boolean equals(Edge e)
+        @Override
+        public boolean equals(Object o)
         {
+            Edge e = (Edge)o;
             return e.get_destination().equals(destination);
         }
 
@@ -139,8 +141,26 @@ public class Unlocker
 
     private void remove_edge(String vertA, String vertB)
     {
+        /*
+        System.err.println("IN REMOVE_EDGES!!!");
         ArrayList<Edge> temp = graph.get(vertA);
-        temp.remove(new Edge(vertB, true));
+        System.err.println(temp.toString());
+        
+        temp.remove(vertB);
+        System.err.println(temp.toString());
+        */
+        System.err.println("IN REMOVE_EDGES!!!");
+        ArrayList<Edge> temp = graph.get(vertA);
+        System.err.println(temp.toString());
+        ArrayList<Edge> new_vals = new ArrayList<Edge>();
+        for(Edge e : temp)
+        {
+            if(!e.get_destination().equals(vertB))
+                new_vals.add(e);
+        }
+        System.err.println(new_vals.toString());
+        graph.put(vertA, new_vals);
+        
     }
 
     private boolean contain_vert(String key)
@@ -151,11 +171,13 @@ public class Unlocker
     private Edge contain_edge(String vertA, String vertB)
     {
         ArrayList<Edge> temp = graph.get(vertA);
-        int index = temp.indexOf(new Edge(vertB, true));
-        if(index != -1)
-            return temp.get(index);
-        else
-            return null;
+        Edge cmp = new Edge(vertB, true);
+        for(Edge e : temp)
+        {
+            if(e.equals(cmp))
+                return e;
+        }
+        return null;
     }
 
     private void grab_all_three_semaphores(String key) throws InterruptedException
@@ -186,7 +208,8 @@ public class Unlocker
     *
     * Check if key is in graph, if it isn't add it
     * Check if key has any edges leaving it
-    * if it does, add wait for edge and run cycle detection
+    * if only edge is yours, make yourself a write edge
+    * else if other edges exist, add wait for edge and run cycle detection
     * else add acquired write edge
     *
     */ 
@@ -201,6 +224,24 @@ public class Unlocker
                 add_vertex(key);
 
             ArrayList<Edge> neighbors = get_neighbors(key);
+            for(Edge e : neighbors)
+            {
+                if(e.get_destination().equals(pid_vert))
+                {
+                    if(e.is_write())
+                        return true;
+                    else
+                    {
+                        System.err.println("ARE WE REMOVING READ EDGE IN ISWRITEABLE???");
+                        System.err.println(graph.toString());
+                        remove_edge(key, pid_vert);
+                        release_read_semaphore(key);
+                        System.err.println(graph.toString());
+                        break;
+                    }
+                }
+            }
+
             if(!neighbors.isEmpty())
             {
                 add_edge(pid_vert, key, true); // wait for edge
@@ -210,6 +251,7 @@ public class Unlocker
                     return false;
                 }
             }
+            
             l.unlock();
             System.err.println("Grabbing semaphores in isWriteable");
             grab_all_three_semaphores(key);
@@ -228,9 +270,10 @@ public class Unlocker
     /*
     *
     * Check if key is in graph, if it isn't return false to abort transaction
-    * Check if any edges leaving key are write edges
-    * If so, add wait for edge and run cycle detection
-    * else add acquired read edge
+    * Check edges
+    * If any edge is us, return true
+    * else if we have no edges and there is a write edge, add wait for edge and run cycle detection
+    * add acquired read edge
     *
     */
     public boolean isReadable(int pid, String key)
@@ -244,6 +287,13 @@ public class Unlocker
                 return false;
 
             ArrayList<Edge> neighbors = get_neighbors(key);
+            Edge cmp = new Edge(pid_vert, true);
+            for(Edge e : neighbors)
+            {
+                if(e.equals(cmp))
+                    return true;
+            }
+
             boolean has_writer = false;
             for(Edge e : neighbors)
             {
@@ -295,12 +345,11 @@ public class Unlocker
                 Map.Entry pair = (Map.Entry)it.next();
                 String key = (String)pair.getKey();
                 ArrayList<Edge> temp = (ArrayList<Edge>)pair.getValue();
-                System.err.println("key is: " + key + "and edges are: " + temp);
-                int index = temp.indexOf(e);
-                System.err.println("index is " + index);
-                if(index != -1)
+
+                Edge curr = contain_edge(key, vert);
+
+                if(curr != null)
                 {
-                    Edge curr = temp.get(index);
                     if(curr.is_write())
                     {
                         System.err.println("Release write semaphore");
@@ -311,12 +360,12 @@ public class Unlocker
                         System.err.println("Release read semaphore");
                         release_read_semaphore(key);
                     }
-                    temp.remove(e);
+                    temp.remove(curr);
                 }
             }
         }
         finally { l.unlock();}
-        System.err.println("graph after is: " + graph);
+        System.err.println("graph after is: " + graph + "\n");
     }
 
     public static void main(String[] args)
