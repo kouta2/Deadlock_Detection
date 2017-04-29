@@ -36,7 +36,10 @@ public class Main implements RPCFunctions
     public String s_get(String key)
     {
         System.err.println("in s_get with key: " + key);
-        return kv.get(key); 
+    	String val = kv.get(key); 
+		if (val == null)
+			return "NOT FOUND"; 
+	    return val; 
     }
 
 

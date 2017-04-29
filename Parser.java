@@ -78,7 +78,8 @@ public class Parser
 					r.c_abort(Main.PROCESS_ID); 
 				}catch (Exception e){}
 				re_init(); 
-				System.out.println(result); 
+				System.out.println(result);
+				System.out.println("ABORT");  
 			}else{
 				System.out.println(result); 
 			}
