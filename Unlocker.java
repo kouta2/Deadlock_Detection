@@ -53,45 +53,7 @@ public class Unlocker
         }
     }
 
-    /*    
-    public class LockOwner
-    {
-        private Semaphore s;
-        private int pid;
-
-        public LockOwner(int p)
-        {
-            pid = p;
-            s = new Semaphore(1, true);
-        }
-
-        public void acquire(int p) throws InterruptedException
-        {
-            pid = p;
-            s.acquire();
-        }
-
-        public void release() throws InterruptedException
-        {
-            s.release();
-            pid = -1;
-        }
-    
-        public int get_pid()
-        {
-            return pid;
-        }
-
-        public int set_pid(int p)
-        {
-            pid = p;
-        }
-    }
-    */
-
-
     private HashMap<String, ArrayList<Edge>> graph; // outgoing edges
-    // private HashMap<String, LockOwner[]> locks; // locks for every variable
     private HashMap<String, Semaphore> semaphores; // semaphore for each variable
     private Lock l;
 
@@ -103,7 +65,6 @@ public class Unlocker
         graph.put("8", new ArrayList<Edge>());
         graph.put("9", new ArrayList<Edge>());
 
-        // locks = new HashMap<String, LockOwner[]>();
         semaphores = new HashMap<String, Semaphore>();
 
         l = new ReentrantLock();
@@ -117,15 +78,6 @@ public class Unlocker
     private void add_vertex(String vert)
     {
         graph.put(vert, new ArrayList<Edge>());
-
-        /*
-        locks.put(vert, new LockOwner[3]);
-        LockOwner[] r  = locks.get(vert);
-        r[0] = new LockOwner(-1);
-        r[1] = new LockOwner(-1);
-        r[2] = new LockOwner(-1);
-        */
-
         semaphores.put(vert, new Semaphore(3, true));
     }
 
@@ -157,7 +109,9 @@ public class Unlocker
     {
         visited.add(curr);
         if(curr.equals(vert))
+        {
             return true;
+        }
         else
         {
             ArrayList<Edge> neighbors = get_neighbors(curr);
@@ -204,13 +158,13 @@ public class Unlocker
             return null;
     }
 
-    private void grab_all_three_semaphores(String pid, String key) throws InterruptedException
+    private void grab_all_three_semaphores(String key) throws InterruptedException
     {
         Semaphore s = semaphores.get(key);
         s.acquire(3);       
     }
 
-    private void grab_a_semaphore(String pid, String key) throws InterruptedException
+    private void grab_a_semaphore(String key) throws InterruptedException
     {
         Semaphore s = semaphores.get(key);
         s.acquire(1);
@@ -231,18 +185,14 @@ public class Unlocker
     /*
     *
     * Check if key is in graph, if it isn't add it
-    * Check if acquired edge exists already
-    * if it is write, do nothing and return
-    * if it is read, remove edge
-    * add wait for edge
-    * if there is cycle return false so wait for will be aborted
-    * else try to grab all 3 semaphores
-    * remove wait for edge and replace with acquired edge
-    * return true
+    * Check if key has any edges leaving it
+    * if it does, add wait for edge and run cycle detection
+    * else add acquired write edge
     *
     */ 
     public boolean isWriteable(int pid, String key)
     {
+
         String pid_vert = Integer.toString(pid);
         l.lock();
         try
@@ -250,47 +200,35 @@ public class Unlocker
             if(!contain_vert(key))
                 add_vertex(key);
 
-            Edge e = contain_edge(key, pid_vert);
-            if(e != null)
+            ArrayList<Edge> neighbors = get_neighbors(key);
+            if(!neighbors.isEmpty())
             {
-                if(e.is_write())
-                    return true; // already have permission
-                else
+                add_edge(pid_vert, key, true); // wait for edge
+                if(is_cycle(pid_vert))
                 {
-                    remove_edge(key, pid_vert);
-                    release_read_semaphore(key); // remove read semaphore
+                    remove_edge(pid_vert, key);
+                    return false;
                 }
             }
-
-            add_edge(pid_vert, key, true); // wait for
-            if(is_cycle(pid_vert))
-            {
-                return false; // edge will be removed in wait_for
-            }
+            l.unlock();
+            grab_all_three_semaphores(key);
+            l.lock();
+            remove_edge(pid_vert, key); // remove wait for edge
+            add_edge(key, pid_vert, true); // acquired edge
+            return true;
+            
         }
-        finally { l.unlock();}
-        try{ grab_all_three_semaphores(pid_vert, key);} // need to unlock graph before grabbing semaphores
         catch (Exception e) {}
-        l.lock();
-        try
-        {
-            remove_edge(pid_vert, key);
-            add_edge(key, pid_vert, true); // acquired
-        }
         finally { l.unlock();}
-        return true;
+        return false;
     }
 
     /*
     *
     * Check if key is in graph, if it isn't return false to abort transaction
-    * Check if Write edge or read edge is in graph already
-    * If it is, return true
-    * else add wait for edge
-    * if there is cycle return false so wait for edge will be aborted
-    * else try to grab a semaphore
-    * remove wait for edge and replace with acqured edge
-    * return true
+    * Check if any edges leaving key are write edges
+    * If so, add wait for edge and run cycle detection
+    * else add acquired read edge
     *
     */
     public boolean isReadable(int pid, String key)
@@ -302,29 +240,35 @@ public class Unlocker
             if(!contain_vert(key))
                 return false;
 
-            Edge e = contain_edge(key, pid_vert);
-            if(e != null)
+            ArrayList<Edge> neighbors = get_neighbors(key);
+            boolean has_writer = false;
+            for(Edge e : neighbors)
             {
-                return true;
+                if(e.is_write())
+                {
+                    has_writer = true;
+                    break;
+                }
             }
-
-            add_edge(pid_vert, key, false); // wait for
-            if(is_cycle(pid_vert))
+            if(has_writer)
             {
-                return false;
+                add_edge(pid_vert, key, false); // wait for reading edge
+                if(is_cycle(pid_vert))
+                {
+                    remove_edge(pid_vert, key);
+                    return false;
+                }
             }
+            l.unlock();
+            grab_a_semaphore(key);
+            l.lock();
+            remove_edge(pid_vert, key); // remove wait for edge
+            add_edge(key, pid_vert, false); // acquired edge
+            return true;
         }
-        finally { l.unlock();}
-        try { grab_a_semaphore(pid_vert, key);} // need to unlock graph before grabbing semaphore
         catch (Exception e) {}
-        l.lock();
-        try
-        {
-            remove_edge(pid_vert, key);
-            add_edge(key, pid_vert, false);
-        }
         finally { l.unlock();}
-        return true;
+        return false;
     }
 
     /*
