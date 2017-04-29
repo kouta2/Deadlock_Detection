@@ -112,7 +112,7 @@ public class Main implements RPCFunctions
 			}catch(Exception e){}
 		}
 
-		unlocker.clear_vertex(Integer.toString(PROCESS_ID)); 
+		unlocker.clear_vertex(Integer.toString(pid)); 
         return null;
     }
 
@@ -120,7 +120,7 @@ public class Main implements RPCFunctions
     {
         // TODO: We needed to consider keys that were added from this transaction that never existed before so that they should be removed from graph
         System.err.println("in c_abort from pid: " + pid);
-		unlocker.clear_vertex(Integer.toString(PROCESS_ID)); 
+		unlocker.clear_vertex(Integer.toString(pid)); 
         return null;
    }
 
