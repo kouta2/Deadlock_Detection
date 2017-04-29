@@ -282,6 +282,8 @@ public class Unlocker
     */
     public void clear_vertex(String vert)
     {
+        System.err.println("in clear_vertex with vertex = " + vert);
+        System.err.println("graph before is: " + graph);
         l.lock();
         try
         {
@@ -299,10 +301,12 @@ public class Unlocker
                     Edge curr = temp.get(index);
                     if(curr.is_write())
                     {
+                        System.err.println("Release write semaphore");
                         release_write_semaphore((String)pair.getKey());
                     }
                     else
                     {
+                        System.err.println("Release read semaphore");
                         release_read_semaphore((String)pair.getKey());
                     }
                     temp.remove(e);
@@ -310,6 +314,7 @@ public class Unlocker
             }
         }
         finally { l.unlock();}
+        System.err.println("graph after is: " + graph);
     }
 
     public static void main(String[] args)
