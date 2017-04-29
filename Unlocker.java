@@ -293,21 +293,23 @@ public class Unlocker
             while(it.hasNext())
             {
                 Map.Entry pair = (Map.Entry)it.next();
-
+                String key = (String)pair.getKey();
                 ArrayList<Edge> temp = (ArrayList<Edge>)pair.getValue();
+                System.err.println("key is: " + key + "and edges are: " + temp);
                 int index = temp.indexOf(e);
+                System.err.println("index is " + index);
                 if(index != -1)
                 {
                     Edge curr = temp.get(index);
                     if(curr.is_write())
                     {
                         System.err.println("Release write semaphore");
-                        release_write_semaphore((String)pair.getKey());
+                        release_write_semaphore(key);
                     }
                     else
                     {
                         System.err.println("Release read semaphore");
-                        release_read_semaphore((String)pair.getKey());
+                        release_read_semaphore(key);
                     }
                     temp.remove(e);
                 }
