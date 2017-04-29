@@ -192,7 +192,7 @@ public class Unlocker
     */ 
     public boolean isWriteable(int pid, String key)
     {
-
+        System.err.println("in isWriteable with pid = " + pid + " key = " + key);
         String pid_vert = Integer.toString(pid);
         l.lock();
         try
@@ -211,7 +211,9 @@ public class Unlocker
                 }
             }
             l.unlock();
+            System.err.println("Grabbing semaphores in isWriteable");
             grab_all_three_semaphores(key);
+            System.err.println("Grabbed all 3 semaphores in isWriteable");
             l.lock();
             remove_edge(pid_vert, key); // remove wait for edge
             add_edge(key, pid_vert, true); // acquired edge
@@ -233,6 +235,7 @@ public class Unlocker
     */
     public boolean isReadable(int pid, String key)
     {
+        System.err.println("in isReadable with pid = " + pid + " key = " + key);
         String pid_vert = Integer.toString(pid);
         l.lock();
         try
@@ -260,7 +263,9 @@ public class Unlocker
                 }
             }
             l.unlock();
+            System.err.println("Grabbing a semaphore in isReadable");
             grab_a_semaphore(key);
+            System.err.println("Grabbed a semaphore in isReadable");
             l.lock();
             remove_edge(pid_vert, key); // remove wait for edge
             add_edge(key, pid_vert, false); // acquired edge
