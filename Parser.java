@@ -18,6 +18,9 @@ public class Parser
 
 
     public static void handle_one_line(String cmd){
+			
+		if (cmd.length() < 3)
+			return; 
     
 		RPCFunctions r = Main.rpc_connect.get_connection(10);
 		
@@ -79,9 +82,8 @@ public class Parser
 				}catch (Exception e){}
 				re_init(); 
 				System.out.println(result);
-				System.out.println("ABORT");  
 			}else{
-				System.out.println(result); 
+				System.out.println(key + " = " result); 
 			}
 			
 		}
