@@ -83,7 +83,7 @@ public class Parser
 				re_init(); 
 				System.out.println(result);
 			}else{
-				System.out.println(key + " = " result); 
+				System.out.println(key + " = " + result); 
 			}
 			
 		}
