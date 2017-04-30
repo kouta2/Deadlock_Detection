@@ -45,8 +45,14 @@ public class Unlocker
         @Override
         public boolean equals(Object o)
         {
+            if(o == this)
+                return true;
+
+            if(!(o instanceof Edge))
+                return false;
+
             Edge e = (Edge)o;
-            return e.get_destination().equals(destination);
+            return e.destination.equals(this.destination);
         }
 
         public String toString()
