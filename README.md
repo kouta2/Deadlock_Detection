@@ -12,7 +12,7 @@ To check if rmiregistry is already running on a machine, type the following comm
 >> ps aux | grep rmiregistry
 
 As long as rmiregistry is running, then type the following command inside the class_files directory:
->> java main
+>> java Main
 
 To kill a client, simply send a SIGINT (CTRL+C).
 
@@ -21,3 +21,7 @@ To kill a rmiregistry type:
 look for the pid of the serving running and type:
 >>kill <pid>
 
+VMs 1-5 are servers A-E respectively. VMs 6-9 are clients and this distributed transaction assumes no more than 3 clients. VM 10 is a coordinator.
+
+To run a simple test on one of the clients, run the following code inside the class_files directory:
+>> python ../client_interface.py java Main
