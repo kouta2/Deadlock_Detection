@@ -90,12 +90,13 @@ public class Parser
 
 		if (arg.toUpperCase().equals("SET")){
 			String value = args[2]; 
-			System.err.println ("Set value to: " + value); 
+			//System.err.println ("Set value to: " + value); 
 			try{	
-				System.err.println("Calling c_set"); 
+				// System.err.println("Calling c_set"); 
 				result = r.c_set(Main.PROCESS_ID, key, value);
-				System.err.println("Returned from c_set"); 
-			}catch (Exception e){}
+				// System.err.println("Returned from c_set"); 
+		    }
+			catch (Exception e){}
 			if (result == null){
 				try{
 					r.c_abort(Main.PROCESS_ID); 

@@ -50,8 +50,8 @@ class ClientInterface:
 									"\", but got :\"" + output + "\"")
 		return output
 
-	def __del__(self):
-		self.cli.kill()
+    def __del__(self):
+        self.cli.kill()
 
 def main():
 	client = ClientInterface(args=sys.argv[1:], debug_mode=False)
@@ -62,7 +62,7 @@ def main():
 	print "When your client process is ready, press Enter to start testing"
 	sys.stdin.readline()
 	print "Testing starts!"
-
+    '''
 	#abort a transaction
 	client.operation("BEGIN", expected="OK")
 	client.operation("SET A.course_name 425/428", expected="OK")
@@ -90,6 +90,8 @@ def main():
 	# while(True):
 	# 	input = sys.stdin.readline()
 	# 	print client.operation(input)
+    '''
+    test1(client)
 
 if __name__ == '__main__':
 	main()

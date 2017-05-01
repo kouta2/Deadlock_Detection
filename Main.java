@@ -29,13 +29,13 @@ public class Main implements RPCFunctions
     public String s_set(String key, String value)
     {
        	kv.put(key,value);
-        System.err.println("key is: " + key + " and value is: " + value);
+        //System.err.println("key is: " + key + " and value is: " + value);
 	    return null; 
     }
 
     public String s_get(String key)
     {
-        System.err.println("in s_get with key: " + key);
+        //System.err.println("in s_get with key: " + key);
     	String val = kv.get(key); 
 		if (val == null)
 			return "NOT FOUND"; 
@@ -47,7 +47,7 @@ public class Main implements RPCFunctions
     {
         // check if set is valid and return
 
-        System.err.println("in c_set with key is: " + key + " and value is: " + value);
+        // System.err.println("in c_set with key is: " + key + " and value is: " + value);
 
 		boolean allowed = true;  	
 		//TODO: Graph edge checking
@@ -66,7 +66,7 @@ public class Main implements RPCFunctions
         // check if get is valid
         // return result
     	
-        System.err.println("in c_get with key: " + key);
+        //System.err.println("in c_get with key: " + key);
 
 		boolean allowed = true;  
     	//TODO: Graph edge checking    
@@ -97,7 +97,7 @@ public class Main implements RPCFunctions
         // send updates to proper servers
         // clean up graph
 
-        System.err.println("In c_commit with updates : " + updates.toString());
+        // System.err.println("In c_commit with updates : " + updates.toString());
 		
 		for (Map.Entry<String,String> entry : updates.entrySet())
         {
@@ -119,7 +119,7 @@ public class Main implements RPCFunctions
     public String c_abort(int pid)
     {
         // TODO: We needed to consider keys that were added from this transaction that never existed before so that they should be removed from graph
-        System.err.println("in c_abort from pid: " + pid);
+        //System.err.println("in c_abort from pid: " + pid);
 		unlocker.clear_vertex(Integer.toString(pid)); 
         return null;
    }
@@ -166,7 +166,7 @@ public class Main implements RPCFunctions
         }
         else // client
         {
-            System.err.println("Client " + PROCESS_ID + " ready");
+            //System.err.println("Client " + PROCESS_ID + " ready");
             Scanner scan = new Scanner(System.in);
             while(true)
                 Parser.handle_one_line(scan.nextLine());
